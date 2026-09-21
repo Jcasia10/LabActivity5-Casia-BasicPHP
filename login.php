@@ -1,4 +1,12 @@
 <?php
+ini_set('session.use_strict_mode', '1');
+session_set_cookie_params([
+	'lifetime' => 0,
+	'path' => '/',
+	'httponly' => true,
+	'samesite' => 'Strict',
+	'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+]);
 session_start();
 
 if (!empty($_SESSION['authenticated'])) {
@@ -7,6 +15,7 @@ if (!empty($_SESSION['authenticated'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	session_regenerate_id(true);
 	$_SESSION['authenticated'] = true;
 	$_SESSION['email'] = strtolower(trim($_POST['email'] ?? ''));
 	header('Location: index.php');
